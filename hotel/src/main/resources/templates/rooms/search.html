@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Search Rooms - Hotel Management System</title>
+</head>
+<body>
+    <section class="container mt-4">
+        <h2 class="text-primary mb-4">Search Rooms</h2>
+
+        <!-- Search Form -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <form th:action="@{/rooms/search}" method="get" class="row g-3">
+                    <!-- Room Type -->
+                    <div class="col-md-4">
+                        <label for="type" class="form-label">Room Type</label>
+                        <select class="form-select" id="type" name="type">
+                            <option value="">All Types</option>
+                            <option th:each="roomType : ${roomTypes}"
+                                    th:value="${roomType}"
+                                    th:text="${roomType.displayName}"
+                                    th:selected="${param.type != null and param.type[0] == roomType.name()}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="col-md-4">
+                        <label for="minPrice" class="form-label">Min Price</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="minPrice" 
+                                   name="minPrice" 
+                                   th:value="${param.minPrice}"
+                                   step="0.01">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="maxPrice" class="form-label">Max Price</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="maxPrice" 
+                                   name="maxPrice" 
+                                   th:value="${param.maxPrice}"
+                                   step="0.01">
+                        </div>
+                    </div>
+
+                    <!-- Floor -->
+                    <div class="col-md-4">
+                        <label for="floor" class="form-label">Floor</label>
+                        <input type="number" 
+                               class="form-control" 
+                               id="floor" 
+                               name="floor"
+                               th:value="${param.floor}">
+                    </div>
+
+                    <!-- View -->
+                    <div class="col-md-4">
+                        <label for="view" class="form-label">View</label>
+                        <select class="form-select" id="view" name="view">
+                            <option value="">All Views</option>
+                            <option value="Ocean View" 
+                                    th:selected="${param.view != null and param.view[0] == 'Ocean View'}">
+                                Ocean View
+                            </option>
+                            <option value="City View"
+                                    th:selected="${param.view != null and param.view[0] == 'City View'}">
+                                City View
+                            </option>
+                            <option value="Garden View"
+                                    th:selected="${param.view != null and param.view[0] == 'Garden View'}">
+                                Garden View
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="col-md-4">
+                        <label class="form-label">Features</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       id="petFriendly" 
+                                       name="petFriendly"
+                                       th:checked="${param.petFriendly != null}">
+                                <label class="form-check-label" for="petFriendly">Pet Friendly</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       id="smoking" 
+                                       name="smoking"
+                                       th:checked="${param.smoking != null}">
+                                <label class="form-check-label" for="smoking">Smoking</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search Button -->
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                        <a th:href="@{/rooms/search}" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Reset
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col" th:each="room : ${rooms}">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <span th:text="${room.roomNumber}"></span>
+                            <span class="badge bg-info" th:text="${room.type.displayName}"></span>
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted" th:text="${room.view}"></h6>
+                        <p class="card-text" th:text="${room.description}"></p>
+                        <ul class="list-unstyled">
+                            <li><strong>Floor:</strong> <span th:text="${room.floor}"></span></li>
+                            <li><strong>Price:</strong> <span th:text="${'$' + #numbers.formatDecimal(room.price, 1, 2)}"></span></li>
+                            <li>
+                                <strong>Features:</strong>
+                                <span th:if="${room.isPetFriendly}" class="badge bg-warning me-1">Pet Friendly</span>
+                                <span th:if="${room.isSmokingAllowed}" class="badge bg-secondary">Smoking</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span th:if="${room.isAvailable}" class="badge bg-success">Available</span>
+                            <span th:unless="${room.isAvailable}" class="badge bg-danger">Occupied</span>
+                            <a th:href="@{/rooms/{id}/edit(id=${room.id})}" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results Message -->
+        <div th:if="${rooms.empty}" class="alert alert-info mt-4">
+            No rooms found matching your search criteria.
+        </div>
+    </section>
+</body>
+</html> 

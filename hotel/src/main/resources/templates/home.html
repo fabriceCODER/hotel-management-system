@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Welcome - Hotel Management System</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4">Welcome to Hotel Management System</h1>
+            <p class="lead">Manage your hotel operations efficiently with our comprehensive management system.</p>
+            <hr class="my-4">
+            <p>Book rooms, manage guests, and handle reservations all in one place.</p>
+            <a class="btn btn-primary btn-lg" href="/login" role="button">Get Started</a>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Room Management</h5>
+                        <p class="card-text">Easily manage room availability, types, and pricing.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Booking System</h5>
+                        <p class="card-text">Streamline the booking process for your guests.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Guest Management</h5>
+                        <p class="card-text">Keep track of guest information and preferences.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

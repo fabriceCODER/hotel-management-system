@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title th:text="${user.id == null ? 'New User' : 'Edit User'} + ' - Hotel Management System'"></title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center" th:text="${user.id == null ? 'Create New User' : 'Edit User'}"></h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="${user.id == null ? '/users' : '/users/' + user.id}" 
+                              th:object="${user}" 
+                              method="post">
+                            
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="username" 
+                                       th:field="*{username}" 
+                                       th:readonly="${user.id != null}"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="password" 
+                                       th:field="*{password}"
+                                       th:required="${user.id == null}">
+                                <small class="text-muted" th:if="${user.id != null}">Leave blank to keep current password</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label">Full Name</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="fullName" 
+                                       th:field="*{fullName}" 
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" 
+                                       class="form-control" 
+                                       id="email" 
+                                       th:field="*{email}" 
+                                       required>
+                            </div>
+
+                            <div class="mb-3" th:if="${user.id != null}">
+                                <label class="form-label">Roles</label>
+                                <div class="d-flex gap-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="checkbox" 
+                                               id="roleAdmin" 
+                                               th:checked="${user.roles.contains('ADMIN')}"
+                                               onchange="updateRole(this, 'ADMIN')">
+                                        <label class="form-check-label" for="roleAdmin">Admin</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="checkbox" 
+                                               id="roleStaff" 
+                                               th:checked="${user.roles.contains('STAFF')}"
+                                               onchange="updateRole(this, 'STAFF')">
+                                        <label class="form-check-label" for="roleStaff">Staff</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="checkbox" 
+                                               id="roleUser" 
+                                               th:checked="${user.roles.contains('USER')}"
+                                               onchange="updateRole(this, 'USER')">
+                                        <label class="form-check-label" for="roleUser">User</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <a href="/users" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        function updateRole(checkbox, role) {
+            const userId = /*[[${user.id}]]*/ null;
+            const action = checkbox.checked ? 'add' : 'remove';
+            const url = `/users/${userId}/roles${action === 'remove' ? '/remove' : ''}`;
+            
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `role=${role}`
+            }).then(response => {
+                if (!response.ok) {
+                    checkbox.checked = !checkbox.checked;
+                    alert('Failed to update role');
+                }
+            });
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Rooms - Hotel Management System</title>
+</head>
+<body>
+    <section class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary">Room Management</h2>
+            <a th:href="@{/rooms/new}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Room
+            </a>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Room List -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Room Number</th>
+                                <th>Type</th>
+                                <th>Floor</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>View</th>
+                                <th>Features</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="room : ${rooms}">
+                                <td th:text="${room.roomNumber}"></td>
+                                <td>
+                                    <span class="badge bg-info" th:text="${room.type.displayName}"></span>
+                                </td>
+                                <td th:text="${room.floor}"></td>
+                                <td th:text="${'$' + #numbers.formatDecimal(room.price, 1, 2)}"></td>
+                                <td>
+                                    <span th:if="${room.isAvailable}" class="badge bg-success">Available</span>
+                                    <span th:unless="${room.isAvailable}" class="badge bg-danger">Occupied</span>
+                                </td>
+                                <td th:text="${room.view}"></td>
+                                <td>
+                                    <span th:if="${room.isPetFriendly}" class="badge bg-warning me-1">Pet Friendly</span>
+                                    <span th:if="${room.isSmokingAllowed}" class="badge bg-secondary">Smoking</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a th:href="@{/rooms/{id}/edit(id=${room.id})}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-danger"
+                                                th:data-bs-toggle="modal"
+                                                th:data-bs-target="#deleteModal"
+                                                th:data-room-id="${room.id}"
+                                                th:data-room-number="${room.roomNumber}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete room <span id="roomNumber"></span>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Delete Modal -->
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteModal = document.getElementById('deleteModal');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const roomId = button.getAttribute('data-room-id');
+                    const roomNumber = button.getAttribute('data-room-number');
+                    
+                    document.getElementById('roomNumber').textContent = roomNumber;
+                    document.getElementById('deleteForm').action = `/rooms/${roomId}/delete`;
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

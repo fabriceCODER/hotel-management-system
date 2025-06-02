@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${room.id == null ? 'Add New Room' : 'Edit Room'} + ' - Hotel Management System'"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 th:text="${room.id == null ? 'Add New Room' : 'Edit Room'}"></h2>
+            </div>
+            <div class="card-body">
+                <form th:action="${room.id == null ? '/rooms' : '/rooms/' + room.id}" 
+                      th:object="${room}" 
+                      method="post">
+                    
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                    
+                    <div class="form-group">
+                        <label for="roomNumber">Room Number</label>
+                        <input type="text" id="roomNumber" th:field="*{roomNumber}" required>
+                        <div class="error" th:if="${#fields.hasErrors('roomNumber')}" th:errors="*{roomNumber}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="type">Room Type</label>
+                        <select id="type" th:field="*{type}" required>
+                            <option value="">Select Room Type</option>
+                            <option th:each="type : ${T(com.hotel.model.RoomType).values()}"
+                                    th:value="${type}"
+                                    th:text="${type.displayName + ' - $' + type.basePrice + '/night'}">
+                            </option>
+                        </select>
+                        <div class="error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="price">Price per Night ($)</label>
+                        <input type="number" id="price" th:field="*{price}" step="0.01" required>
+                        <div class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="floor">Floor</label>
+                        <input type="number" id="floor" th:field="*{floor}" required>
+                        <div class="error" th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" th:field="*{description}" rows="3"></textarea>
+                        <div class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="view">View</label>
+                        <input type="text" id="view" th:field="*{view}">
+                        <div class="error" th:if="${#fields.hasErrors('view')}" th:errors="*{view}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="size">Room Size (sq ft)</label>
+                        <input type="number" id="size" th:field="*{size}" required>
+                        <div class="error" th:if="${#fields.hasErrors('size')}" th:errors="*{size}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxOccupancy">Maximum Occupancy</label>
+                        <input type="number" id="maxOccupancy" th:field="*{maxOccupancy}" required>
+                        <div class="error" th:if="${#fields.hasErrors('maxOccupancy')}" th:errors="*{maxOccupancy}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amenities">Amenities</label>
+                        <div class="amenities-container">
+                            <div th:each="amenity : ${T(com.hotel.model.Amenity).values()}" class="amenity-checkbox">
+                                <input type="checkbox" 
+                                       th:field="*{amenities}" 
+                                       th:value="${amenity}"
+                                       th:id="'amenity-' + ${amenity}">
+                                <label th:for="'amenity-' + ${amenity}" th:text="${amenity.displayName}"></label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="isSmokingAllowed" th:field="*{isSmokingAllowed}">
+                            <label for="isSmokingAllowed">Smoking Allowed</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="isPetFriendly" th:field="*{isPetFriendly}">
+                            <label for="isPetFriendly">Pet Friendly</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maintenanceNotes">Maintenance Notes</label>
+                        <textarea id="maintenanceNotes" th:field="*{maintenanceNotes}" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" th:text="${room.id == null ? 'Create Room' : 'Update Room'}"></button>
+                        <a th:href="@{/rooms}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update price when room type changes
+        document.getElementById('type').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (selectedOption.value) {
+                const basePrice = selectedOption.text.split('$')[1].split('/')[0];
+                document.getElementById('price').value = basePrice;
+            }
+        });
+    </script>
+</body>
+</html> 
