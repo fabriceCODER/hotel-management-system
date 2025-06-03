@@ -5,13 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.ToString;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +23,7 @@ import java.util.Set;
 @Entity
 @Table(name = "rooms")
 public class Room {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,9 +32,10 @@ public class Room {
     @Column(nullable = false, unique = true)
     private String roomNumber;
 
-    @NotBlank(message = "Room type is required")
+    @NotNull(message = "Room type is required")
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String type;
+    private RoomType type;
 
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be positive")
