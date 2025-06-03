@@ -6,41 +6,103 @@
     <title>Welcome - Hotel Management System</title>
 </head>
 <body>
-    <div layout:fragment="content">
-        <div class="jumbotron bg-light p-5 rounded">
-            <h1 class="display-4">Welcome to Hotel Management System</h1>
-            <p class="lead">Manage your hotel operations efficiently with our comprehensive management system.</p>
-            <hr class="my-4">
-            <p>Book rooms, manage guests, and handle reservations all in one place.</p>
-            <a class="btn btn-primary btn-lg" href="/login" role="button">Get Started</a>
-        </div>
+<div layout:fragment="content">
+    <div class="jumbotron bg-light p-5 rounded">
+        <h1 class="display-4">Welcome to Hotel Management System</h1>
+        <p class="lead">Manage your hotel operations efficiently with our comprehensive management system.</p>
+        <hr class="my-4">
+        <p>Book rooms, manage guests, and handle reservations all in one place.</p>
+        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+        <a class="btn btn-secondary btn-lg" href="/register" role="button">Register</a>
+    </div>
 
-        <div class="row mt-5">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Room Management</h5>
-                        <p class="card-text">Easily manage room availability, types, and pricing.</p>
-                    </div>
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Room Management</h5>
+                    <p class="card-text">Easily manage room availability, types, and pricing.</p>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Booking System</h5>
-                        <p class="card-text">Streamline the booking process for your guests.</p>
-                    </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Booking System</h5>
+                    <p class="card-text">Streamline the booking process for your guests.</p>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Guest Management</h5>
-                        <p class="card-text">Keep track of guest information and preferences.</p>
-                    </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Guest Management</h5>
+                    <p class="card-text">Keep track of guest information and preferences.</p>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div id="errorMessage" class="text-danger" style="display:none;"></div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="scripts">
+    <!-- JavaScript -->
+    <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#loginForm').submit(function(event) {
+                event.preventDefault();
+                const loginData = {
+                    username: $('#username').val(),
+                    password: $('#password').val()
+                };
+
+                $.ajax({
+                    url: '/api/auth/login',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(loginData),
+                    success: function(response) {
+                        localStorage.setItem('jwtToken', response.token);
+                        $('#errorMessage').hide();
+                        $('#loginModal').modal('hide');
+                        alert('Login successful!');
+                        window.location.href = '/dashboard';
+                    },
+                    error: function(xhr) {
+                        const error = xhr.responseJSON ? xhr.responseJSON.error : 'Login failed';
+                        $('#errorMessage').text(error).show();
+                    }
+                });
+            });
+        });
+    </script>
+</div>
 </body>
-</html> 
+</html>

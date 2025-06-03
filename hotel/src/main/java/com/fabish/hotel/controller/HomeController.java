@@ -11,10 +11,10 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
+//    @GetMapping("/login")
+//    public String login() {
+//        return "login";
+//    }
 
     @GetMapping("/dashboard")
     public String dashboard() {

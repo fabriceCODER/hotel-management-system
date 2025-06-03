@@ -17,17 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
-@Controller
-@RequestMapping("/rooms")
-@RequiredArgsConstructor
-public class RoomController {
+@Controller @RequestMapping("/rooms") @RequiredArgsConstructor public class RoomController {
 
     private final RoomService roomService;
 
@@ -62,7 +57,7 @@ public class RoomController {
             model.addAttribute("roomTypes", RoomType.values());
             return "rooms/form";
         }
-        
+
         try {
             roomService.createRoom(room);
             redirectAttributes.addFlashAttribute("success", "Room created successfully");
@@ -100,7 +95,7 @@ public class RoomController {
             model.addAttribute("roomTypes", RoomType.values());
             return "rooms/form";
         }
-        
+
         try {
             roomService.updateRoom(id, room);
             redirectAttributes.addFlashAttribute("success", "Room updated successfully");
@@ -141,10 +136,9 @@ public class RoomController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             Model model) {
-        
+
         List<Room> rooms;
-        
-        // If dates are provided, search for available rooms in that date range
+
         if (startDate != null && endDate != null) {
             if (type != null) {
                 rooms = roomService.getAvailableRoomsByTypeAndDateRange(type, startDate, endDate);
@@ -154,7 +148,6 @@ public class RoomController {
                 rooms = roomService.getAvailableRoomsByDateRange(startDate, endDate);
             }
         } else {
-            // Otherwise, use the filters
             if (type != null) {
                 rooms = roomService.getRoomsByType(type);
             } else if (minPrice != null && maxPrice != null) {
@@ -256,9 +249,9 @@ public class RoomController {
             @RequestParam(required = false) String amenity,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        
+
         List<Room> rooms;
-        
+
         if (startDate != null && endDate != null) {
             if (type != null) {
                 rooms = roomService.getAvailableRoomsByTypeAndDateRange(type, startDate, endDate);
@@ -347,4 +340,5 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
 }

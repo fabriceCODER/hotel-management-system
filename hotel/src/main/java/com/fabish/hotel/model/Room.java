@@ -37,10 +37,9 @@ public class Room {
     @Column(nullable = false, unique = true)
     private String roomNumber;
 
-    @NotNull(message = "Room type is required")
-    @Enumerated(EnumType.STRING)
+    @NotBlank(message = "Room type is required")
     @Column(nullable = false)
-    private RoomType type;
+    private String type;
 
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be positive")
@@ -49,7 +48,7 @@ public class Room {
 
     @NotNull(message = "Availability status is required")
     @Column(nullable = false)
-    private Boolean isAvailable = true;
+    private boolean isAvailable = true;
 
     @Column(length = 1000)
     private String description;
@@ -70,11 +69,11 @@ public class Room {
 
     @Column
     @Builder.Default
-    private Boolean isSmokingAllowed = false;
+    private boolean isSmokingAllowed = false;
 
     @Column
     @Builder.Default
-    private Boolean isPetFriendly = false;
+    private boolean isPetFriendly = false;
 
     @Positive(message = "Maximum occupancy must be positive")
     @Column

@@ -10,15 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.time.LocalTime; import java.util.List; import java.util.Optional;
 
-@Service
-@Transactional
-@RequiredArgsConstructor
-public class RoomService {
+@Service @Transactional @RequiredArgsConstructor public class RoomService {
 
     private final RoomRepository roomRepository;
 
@@ -85,19 +79,16 @@ public class RoomService {
         return roomRepository.findByAmenitiesContaining(amenity);
     }
 
-    public List<Room> getRoomsByAmenities(Set<String> amenities) {
-        // If multiple amenities are provided, we need to find rooms that have all of them
-        // This is a simple implementation that gets rooms for each amenity and finds the intersection
-        if (amenities == null || amenities.isEmpty()) {
-            return List.of();
-        }
+    public List<Room> getRoomsByView(String view) {
+        return roomRepository.findByView(view);
+    }
 
-        return amenities.stream()
-                .map(this::getRoomsByAmenity)
-                .reduce((rooms1, rooms2) -> rooms1.stream()
-                        .filter(rooms2::contains)
-                        .toList())
-                .orElse(List.of());
+    public List<Room> getPetFriendlyRooms() {
+        return roomRepository.findByIsPetFriendlyTrue();
+    }
+
+    public List<Room> getSmokingRooms() {
+        return roomRepository.findByIsSmokingAllowedTrue();
     }
 
     public void updateRoomAvailability(Long id, boolean isAvailable) {
@@ -151,15 +142,4 @@ public class RoomService {
         return roomRepository.findAvailableRoomsByAmenityAndDateRange(amenity, startDateTime, endDateTime);
     }
 
-    public List<Room> getRoomsByView(String view) {
-        return roomRepository.findByView(view);
-    }
-
-    public List<Room> getPetFriendlyRooms() {
-        return roomRepository.findByIsPetFriendlyTrue();
-    }
-
-    public List<Room> getSmokingRooms() {
-        return roomRepository.findByIsSmokingAllowedTrue();
-    }
-} 
+}
