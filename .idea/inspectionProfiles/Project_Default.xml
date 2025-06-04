@@ -1,0 +1,46 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="2">
+            <item index="0" class="java.lang.String" itemvalue="layout:fragment" />
+            <item index="1" class="java.lang.String" itemvalue="layout:decorate" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="VulnerableLibrariesLocal" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="isIgnoringEnabled" value="true" />
+      <option name="ignoredModules">
+        <list>
+          <option value="hotel" />
+          <option value="hotel" />
+          <option value="hotel" />
+          <option value="hotel" />
+          <option value="hotel" />
+        </list>
+      </option>
+      <option name="ignoredPackages">
+        <list>
+          <option value="org.springframework:spring-context:6.1.4" />
+          <option value="ch.qos.logback:logback-classic:1.4.14" />
+          <option value="ch.qos.logback:logback-core:1.4.14" />
+          <option value="org.apache.tomcat.embed:tomcat-embed-core:10.1.19" />
+          <option value="org.springframework.security:spring-security-config:6.2.2" />
+        </list>
+      </option>
+      <option name="ignoredReasons">
+        <list>
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="In progress" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
