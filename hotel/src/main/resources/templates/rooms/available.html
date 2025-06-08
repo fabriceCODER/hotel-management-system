@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Available Rooms</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container mt-4">
+            <h2 class="mb-4">Available Rooms</h2>
+            
+            <!-- Room Type Filter -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form th:action="@{/rooms/search}" method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="type" class="form-label">Room Type</label>
+                            <select class="form-select" id="type" name="type">
+                                <option value="">All Types</option>
+                                <option th:each="type : ${roomTypes}"
+                                        th:value="${type}"
+                                        th:text="${type}">Room Type</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="startDate" class="form-label">Check-in Date</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="endDate" class="form-label">Check-out Date</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate">
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Available Rooms List -->
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div th:each="room : ${rooms}" class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${'Room ' + room.roomNumber}">Room Number</h5>
+                            <h6 class="card-subtitle mb-2 text-muted" th:text="${room.type}">Room Type</h6>
+                            <p class="card-text">
+                                <strong>Floor:</strong> <span th:text="${room.floor}"></span><br>
+                                <strong>Price:</strong> $<span th:text="${#numbers.formatDecimal(room.price, 1, 2)}"></span> per night<br>
+                                <strong>View:</strong> <span th:text="${room.view}"></span><br>
+                                <strong>Capacity:</strong> <span th:text="${room.capacity}"></span> persons
+                            </p>
+                            <div class="d-flex gap-2">
+                                <a th:href="@{/rooms/{id}/book(id=${room.id})}" class="btn btn-primary">Book Now</a>
+                                <a th:href="@{/rooms/{id}(id=${room.id})}" class="btn btn-outline-secondary">Details</a>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <span th:if="${room.petFriendly}" class="badge bg-success me-2">Pet Friendly</span>
+                                <span th:if="${room.smoking}" class="badge bg-warning me-2">Smoking Allowed</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Rooms Available Message -->
+            <div th:if="${#lists.isEmpty(rooms)}" class="alert alert-info mt-4">
+                No rooms are currently available. Please try different dates or room types.
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
